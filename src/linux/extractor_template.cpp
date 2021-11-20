@@ -136,7 +136,7 @@ int main(int argc, char *argv[])
     }
     std::filesystem::current_path(original_dir);
     std::string cmd = "LD_LIBRARY_PATH=" + php::escapeshellarg(global_temp_dir) + " ";
-    cmd += global_temp_dir + last_filename + " ";
+    cmd += php::escapeshellarg(global_temp_dir + last_filename) + " ";
     for (int i = 1; i < argc; ++i)
     {
         std::string arg = argv[i];
