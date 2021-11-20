@@ -194,25 +194,28 @@ function build_static(string $file)
     if ($gpp_return_var !== 0) {
         die($gpp_return_var);
     }
-    $have_upx = $_ = null;
-    exec("upx --version 2>&1", $_, $have_upx);
-    $have_upx = ($have_upx === 0);
+    $use_upx = false;
+    if ($use_upx) {
+        $have_upx = $_ = null;
+        exec("upx --version 2>&1", $_, $have_upx);
+        $have_upx = ($have_upx === 0);
 
-    if (! $have_upx) {
-        echo "upx not detected, skipping..\n";
-    } else {
-        $cmd = implode(" ", array(
-            "upx",
-            "-9",
-            "-v",
-            "-o " . escapeshellarg(basename($file) . ".upx9"),
-            escapeshellarg(basename($file))
-        ));
-        echo "cmd:\n{$cmd}\n";
-        $upx_return_var = null;
-        passthru($cmd, $upx_return_var);
+        if (! $have_upx) {
+            echo "upx not detected, skipping..\n";
+        } else {
+            $cmd = implode(" ", array(
+                "upx",
+                "-9",
+                "-v",
+                "-o " . escapeshellarg(basename($file) . ".upx9"),
+                escapeshellarg(basename($file))
+            ));
+            echo "cmd:\n{$cmd}\n";
+            $upx_return_var = null;
+            passthru($cmd, $upx_return_var);
+        }
+        unset($have_upx, $_);
     }
-    unset($have_upx, $_);
     die();
 }
 
