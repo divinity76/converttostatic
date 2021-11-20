@@ -161,7 +161,7 @@ function build_static(string $file)
     $files = $dependencies;
     $files[] = $file;
     $tar_code = cpptar($files);
-    $cpp = file_get_contents('extractor_template.cpp');
+    $cpp = file_get_contents(__DIR__ . DIRECTORY_SEPARATOR . 'extractor_template.cpp');
     $replacements = array(
         '/*FILE_INJECTION_POINT*/' => "#define _FILES_INJECTED\n" . $tar_code
     );
