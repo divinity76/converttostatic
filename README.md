@@ -50,3 +50,5 @@ libxml2.so.*
 ```
 
 because they are known to cause issues when bundled.. so if they are required, lets just pray the target system has those libs.. also the converted program will no longer be able to accept the specific argument `--debug-converttostatic-lolxd`
+
+also programs depending on getppid() is likely to malfunction
