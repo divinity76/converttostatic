@@ -1,7 +1,7 @@
 # converttostatic
 
-convert dynamic binaries to static ones, kind-of.
-(actually it just kind of makes a self-extracting tar of your binary with all dependencies and
+convert dynamic executables to static, kind-of.
+(actually it just kind of makes a self-extracting tar of your executable with all dependencies and
 extract it at runtime and invoke it with LD_LIBRARY_PATH)
 
 # usage
