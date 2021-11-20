@@ -80,7 +80,6 @@ namespace php
 #ifndef _FILES_INJECTED
 const std::vector<std::tuple<std::string, std::string>> files = {
     {std::string("libselinux.so.1", 15), std::string("sample", 6)},
-    {std::string("libc.so.6", 9), std::string("sample", 6)},
     {std::string("libpcre2-8.so.0", 15), std::string("sample", 6)},
     {std::string("libdl.so.2", 10), std::string("sample", 6)},
     {std::string("ld-linux-x86-64.so.2", 20), std::string("sample", 6)},
@@ -89,6 +88,7 @@ const std::vector<std::tuple<std::string, std::string>> files = {
 #endif // _FILES_INJECTED
 
 std::string global_temp_dir;
+bool global_converttostatic_debugging = false;
 
 void cleanup()
 {
@@ -96,7 +96,10 @@ void cleanup()
     {
         return;
     }
-    std::filesystem::remove_all(global_temp_dir);
+    if (!global_converttostatic_debugging)
+    {
+        std::filesystem::remove_all(global_temp_dir);
+    }
     global_temp_dir.clear();
 }
 
@@ -136,12 +139,21 @@ int main(int argc, char *argv[])
     cmd += global_temp_dir + last_filename + " ";
     for (int i = 1; i < argc; ++i)
     {
+        std::string arg = argv[i];
+        if (arg == "--debug-converttostatic-lolxd")
+        {
+            global_converttostatic_debugging = true;
+            continue;
+        }
         cmd += php::escapeshellarg(argv[i]) + " ";
     }
     if (argc > 1)
     {
         cmd = cmd.substr(0, cmd.size() - 1); // remove last space
     }
-    // std::cout << "cmd: " << cmd << std::endl;
+    if (global_converttostatic_debugging)
+    {
+        std::cout << "cmd: " << cmd << std::endl;
+    }
     return system(cmd.c_str());
 }
