@@ -47,6 +47,9 @@ libc.so.*
 libpthread.so.*
 librt.so.*
 libxml2.so.*
+libldap_r-2.4.so.*
+liblber-2.4.so.*
+libsqlite3.so.*
 ```
 
 because they are known to cause issues when bundled.. so if they are required, lets just pray the target system has those libs.. also the converted program will no longer be able to accept the specific argument `--debug-converttostatic-lolxd`

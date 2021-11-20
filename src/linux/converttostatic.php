@@ -139,7 +139,13 @@ function get_dependencies(string $file): array
         'libc.so.',
         // git --version
         // git: relocation error: /home/blackdforum/.converttostatic_garbage/fe4d434b614951c20ac5/git: symbol clock_gettime version GLIBC_2.2.5 not defined in file librt.so.1 with link time reference
-        'librt.so.'
+        'librt.so.',
+        // /home/blackdforum/.converttostatic_garbage/2b560dddac84acd7bdec/curl: /lib/x86_64-linux-gnu/libc.so.6: version `GLIBC_2.28' not found (required by /home/blackdforum/.converttostatic_garbage/2b560dddac84acd7bdec/libldap_r-2.4.so.2)
+        'libldap_r-2.4.so',
+        // /home/blackdforum/.converttostatic_garbage/bece8e32e2e780b00f2a/curl: /lib/x86_64-linux-gnu/libc.so.6: version `GLIBC_2.28' not found (required by /home/blackdforum/.converttostatic_garbage/bece8e32e2e780b00f2a/liblber-2.4.so.2)
+        'liblber-2.4.so',
+        // /home/blackdforum/.converttostatic_garbage/8281da891d378f617c77/curl: /lib/x86_64-linux-gnu/libc.so.6: version `GLIBC_2.28' not found (required by /home/blackdforum/.converttostatic_garbage/8281da891d378f617c77/libsqlite3.so.0)
+        'libsqlite3.so'
     ];
     foreach ($deps as $dep => $_) {
         $basename = basename($dep);
