@@ -147,10 +147,7 @@ int main(int argc, char *argv[])
         }
         cmd += php::escapeshellarg(argv[i]) + " ";
     }
-    if (argc > 1)
-    {
-        cmd = cmd.substr(0, cmd.size() - 1); // remove last space
-    }
+    cmd = cmd.substr(0, cmd.size() - 1); // remove last space
     if (global_converttostatic_debugging)
     {
         std::cout << "cmd: " << cmd << std::endl;
