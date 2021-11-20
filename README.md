@@ -55,3 +55,6 @@ libsqlite3.so.*
 because they are known to cause issues when bundled.. so if they are required, lets just pray the target system has those libs.. also the converted program will no longer be able to accept the specific argument `--debug-converttostatic-lolxd`
 
 also programs depending on getppid() is likely to malfunction
+
+also the program will be unable to run if your homedir is read-only,
+or if your homedir is mounted with "noexec", or if your disk is full
