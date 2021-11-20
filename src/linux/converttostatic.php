@@ -1,3 +1,4 @@
+#!/usr/bin/env php
 <?php
 declare(strict_types = 1);
 
@@ -124,6 +125,33 @@ function get_dependencies(string $file): array
         throw new LogicException("don't understand this line from ldd: " . $line);
     }
     unset($deps[$file]); // "depends on itself", well duh...
+    $blacklist = [
+        // todo WTF WHY IDK
+        // for unknown reasons, these libs cause crashes and will not be included........
+        // libpthread.so.0
+        // $ ls
+        // *** stack smashing detected ***: <unknown> terminated
+        // Aborted
+        'libpthread.so.',
+        // ./php8.0: /lib/x86_64-linux-gnu/libc.so.6: version `GLIBC_2.28' not found (required by /home/blackdforum/.converttostatic_garbage/7a290334038a3f03f5c7/libxml2.so.2)
+        'libxml2.so.',
+        // ls: relocation error: /lib/x86_64-linux-gnu/libpthread.so.0: symbol __libc_vfork version GLIBC_PRIVATE not defined in file libc.so.6 with link time reference
+        'libc.so.',
+        // git --version
+        // git: relocation error: /home/blackdforum/.converttostatic_garbage/fe4d434b614951c20ac5/git: symbol clock_gettime version GLIBC_2.2.5 not defined in file librt.so.1 with link time reference
+        'librt.so.'
+    ];
+    foreach ($deps as $dep => $_) {
+        $basename = basename($dep);
+        foreach ($blacklist as $blacklisted) {
+            if (0 === strpos($basename, $blacklisted)) {
+                echo "Warning: will not bundle dependency \"{$basename}\" (known-to-cause-trouble when bundled..)\n";
+                unset($deps[$dep]);
+                continue 2;
+            }
+        }
+    }
+    unset($_); // linter..
     return array_keys($deps);
 }
 
@@ -155,9 +183,31 @@ function build_static(string $file)
         escapeshellarg($cppname)
     ));
     echo "cmd:\n{$cmd}\n";
-    $return_var = null;
-    passthru($cmd, $return_var);
-    die($return_var);
+    $gpp_return_var = null;
+    passthru($cmd, $gpp_return_var);
+    if ($gpp_return_var !== 0) {
+        die($gpp_return_var);
+    }
+    $have_upx = $_ = null;
+    exec("upx --version 2>&1", $_, $have_upx);
+    $have_upx = ($have_upx === 0);
+
+    if (! $have_upx) {
+        echo "upx not detected, skipping..\n";
+    } else {
+        $cmd = implode(" ", array(
+            "upx",
+            "-9",
+            "-v",
+            "-o " . escapeshellarg(basename($file) . ".upx9"),
+            escapeshellarg(basename($file))
+        ));
+        echo "cmd:\n{$cmd}\n";
+        $upx_return_var = null;
+        passthru($cmd, $upx_return_var);
+    }
+    unset($have_upx, $_);
+    die();
 }
 
 /** @var string[] $argv */
